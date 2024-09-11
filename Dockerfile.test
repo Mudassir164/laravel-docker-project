@@ -1,0 +1,38 @@
+#FROM shinsenter/php:8.2-fpm-apache
+FROM shinsenter/php:8.2-fpm-apache-alpine
+
+ENV DEBIAN_FRONTEND noninteractive
+
+
+
+# Install nodejs
+
+#Install apache2
+COPY default.conf /etc/apache2/sites-enabled/00-default.conf
+COPY . /var/www/html
+WORKDIR /var/www/html
+
+RUN composer install
+#RUN npm install
+#entry point command
+RUN echo "\
+    #!/bin/sh\n\
+    echo \"Starting services...\"\n\
+    service php8.2-fpm start\n\
+   # service apache2 restart\n\
+    apachectl -D "FOREGROUND" -k start \n\
+    echo \"Ready...\"\n\
+    " > /start.sh
+
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress
+
+RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data: storage public
+RUN chmod -R 755 storage public 
+
+#RUN composer install
+#CMD service php8.2-fpm start
+EXPOSE 80
+#ENTRYPOINT ["apachectl", "-D", "FOREGROUND"]
+#ENTRYPOINT ["sh", "/start.sh"]	
+

@@ -1,20 +1,38 @@
 services:
-  web:
-    image: web-app-new123:latest
-    #build:
-    #  target: web
-    #  context: .
-    env_file:
-      - .env
-    ports:
-      - "80:80"
-    volumes:
-      - .:/var/www/html
-    depends_on:
-      - db
-  
+#  laravel:
+#    image: 29bc37391121
+ #   image: baseimage
+  #  container_name: laravel 
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile.laravel
+  #  env_file:
+  #    - .env
+  #  ports:
+  #    - 80:80
+  #  networks:
+   #   - laravel-network
+#      - php_mysql-network
+   # volumes:
+   #   - laravel-app:/var/www/html
+   # restart: always
+   # depends_on:
+   #   - db
+
+#  nginx:
+#    build:
+ #     context: .
+ #     dockerfile: Dockerfile.nginx
+ #   image: c44cab1ac8e4
+ #   volumes:
+ #     - laravel-app:/var/www/html
+ #   ports:
+ #     - "8080:80"
+ #   networks:
+ #     - laravel-network
+
   db:
-    image: mysql:8.0
+    image: mysql
     container_name: ${DB_HOST}
     env_file:
       - .env
@@ -23,10 +41,19 @@ services:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3306:3306"
-    volumes:
-      - dbdata:/var/lib/mysql
+   # ports:
+   #   - ":3306"
+    network_mode: "host"
+   # networks:
+   #   - host
+#    volumes:
+ #     - laravel-db:/var/lib/mysql
+    #restart: always
+
+#networks:
+ # laravel-network:
+ # php_mysql-network:
 
 volumes:
-  dbdata:
+  laravel-db: 
+  laravel-app: 
